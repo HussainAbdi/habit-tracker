@@ -2,6 +2,10 @@
 // Application Constants
 // =============================================================================
 
+// Habit Names
+export const HABIT_NAMES = ["Software", "Music", "Gym"] as const;
+export type HabitName = (typeof HABIT_NAMES)[number];
+
 // Date & Calendar
 export const MONTH_NAMES = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
