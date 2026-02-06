@@ -18,6 +18,8 @@ import {
 type CalendarProps = {
   completedDates: Set<string>;
   onDateClick: (date: string) => void;
+  onPrevHabit?: () => void;
+  onNextHabit?: () => void;
 };
 
 // Pre-compute months at module level (doesn't change during session)
@@ -32,7 +34,7 @@ const MONTHS = getMonthsToDisplay();
  * - Visual indicator for completed dates
  * - Click handler for toggling/editing dates
  */
-export function Calendar({ completedDates, onDateClick }: CalendarProps) {
+export function Calendar({ completedDates, onDateClick, onPrevHabit, onNextHabit }: CalendarProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [hasInitialScroll, setHasInitialScroll] = useState(false);
 
@@ -46,36 +48,55 @@ export function Calendar({ completedDates, onDateClick }: CalendarProps) {
 
   const today = getTodayString();
 
+  const handleLeftArrowClick = () => onPrevHabit?.();
+  const handleRightArrowClick = () => onNextHabit?.();
+
   return (
-    <div className="flex flex-col border border-slate-600 rounded-xl mx-auto mt-6 max-w-3xl">
-      <h1 className="text-slate-300 mx-auto mt-4">Calendar</h1>
+      <div className="flex border border-slate-600 rounded-xl mx-auto mt-6 max-w-3xl">
+        <div className="w-1/15 border-r border-slate-600 flex justify-center items-center">
+          <button id="left-arrow" onClick={handleLeftArrowClick} className="text-slate-300 text-2xl hover:text-slate-100 cursor-pointer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" className="h-10 w-10">
+              <path d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
+        <div className="flex flex-col mx-auto flex-grow">
+          <h1 className="text-slate-300 mx-auto mt-4">Calendar</h1>
 
-      {/* Weekday Headers */}
-      <div className="grid grid-cols-7 text-center text-xl text-slate-300 font-semibold mt-6 px-10">
-        {WEEKDAY_LABELS.map((label, i) => (
-          <div key={i}>{label}</div>
-        ))}
-      </div>
+          {/* Weekday Headers */}
+          <div className="grid grid-cols-7 text-center text-xl text-slate-300 font-semibold mt-6 px-2">
+            {WEEKDAY_LABELS.map((label, i) => (
+              <div key={i}>{label}</div>
+            ))}
+          </div>
 
-      {/* Calendar Grid */}
-      <div
-        ref={scrollRef}
-        className={`mt-4 h-100 overflow-y-auto transition-opacity duration-150 ${
-          hasInitialScroll ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        {MONTHS.map(({ monthIndex, year }) => (
-          <CalendarMonth
-            key={`${monthIndex + 1}-${year}`}
-            monthIndex={monthIndex}
-            year={year}
-            today={today}
-            completedDates={completedDates}
-            onDateClick={onDateClick}
-          />
-        ))}
+          {/* Calendar Grid */}
+          <div
+            ref={scrollRef}
+            className={`mt-4 h-100 overflow-y-auto transition-opacity duration-150 ${
+              hasInitialScroll ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {MONTHS.map(({ monthIndex, year }) => (
+              <CalendarMonth
+                key={`${monthIndex + 1}-${year}`}
+                monthIndex={monthIndex}
+                year={year}
+                today={today}
+                completedDates={completedDates}
+                onDateClick={onDateClick}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="w-1/15 border-l border-slate-600 flex justify-center items-center">
+          <button id="right-arrow" onClick={handleRightArrowClick} className="text-slate-300 text-2xl hover:text-slate-100 cursor-pointer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" className="h-10 w-10">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
   );
 }
 
@@ -104,11 +125,11 @@ function CalendarMonth({
 
   return (
     <div className="py-2">
-      <div className="text-lg text-slate-200 font-semibold px-10 sm:px-12 md:px-15">
+      <div className="text-lg text-slate-200 font-semibold px-3 sm:px-4 md:px-5">
         {MONTH_NAMES[monthIndex]} {year}
       </div>
 
-      <div className="grid grid-cols-7 px-10 text-center text-slate-300">
+      <div className="grid grid-cols-7 px-2 text-center text-slate-300">
         {cells.map((day, i) => {
           if (day === 0) {
             return <div key={`pad-${i}`} className="invisible h-14" />;
