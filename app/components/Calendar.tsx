@@ -174,7 +174,7 @@ function CalendarDay({ day, isCompleted, isClickable, onClick }: CalendarDayProp
             ? "bg-slate-800"
             : isClickable
               ? "hover:bg-slate-900 hover:border border-slate-800"
-              : ""
+              : "text-slate-600"
         }`}
         onClick={isClickable ? onClick : undefined}
       >
