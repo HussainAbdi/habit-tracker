@@ -92,12 +92,12 @@ export const getMonthsToDisplay = (): MonthData[] => {
  * Handles formats like "y - 30 mins", "30 mins", "2 hours"
  */
 export const parseTimeValue = (value: string): { timeValue: string; timeUnit: "mins" | "hours" } => {
-  const hoursMatch = value.match(/(\d+)\s*hours?/i);
+  const hoursMatch = value.match(/(\d+\.?\d*)\s*hours?/i);
   if (hoursMatch) {
     return { timeValue: hoursMatch[1], timeUnit: "hours" };
   }
 
-  const minsMatch = value.match(/(\d+)\s*mins?/i);
+  const minsMatch = value.match(/(\d+\.?\d*)\s*mins?/i);
   if (minsMatch) {
     return { timeValue: minsMatch[1], timeUnit: "mins" };
   }
